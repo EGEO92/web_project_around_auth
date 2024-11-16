@@ -1,6 +1,4 @@
-const BASE_URL =
-  "https://se-register-api.en.tripleten-services.com/v1" ||
-  "http://localhost:3000/";
+const BASE_URL = "https://se-register-api.en.tripleten-services.com/v1";
 
 export const register = async ({ email, password }) => {
   return fetch(`${BASE_URL}/signup`, {
@@ -24,6 +22,7 @@ export const login = async ({ email, password }) => {
 };
 
 export const checkToken = async (token) => {
+  console.log("que es token en auth  ", typeof token);
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     headers: {
@@ -31,8 +30,4 @@ export const checkToken = async (token) => {
       Authorization: `Bearer ${token}`,
     },
   });
-};
-
-export const getToken = () => {
-  return localStorage.getItem("jwt");
 };

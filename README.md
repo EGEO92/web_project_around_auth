@@ -6,5 +6,5 @@ Contiene información del usuario como apodo o nombre, una ocpuación y una imag
 
 Se utilizaron modulos individuales de react interconectados para su funcionamiento.
 
-Se conecta a la appi usando la metodologia HTTP api REST. Se utilizan hooks como useEffect, useState, context,
-se crea una ruta protegida y se autenticacion de usuario desde el front end.
+Se conecta a la appi usando la metodologia HTTP api REST. Se utilizan hooks como useEffect, useState, Context,
+se crea una ruta protegida/privada que solo se puede ver despues de iniciar sesion correctamente mediante autenticacion de usuario desde el front end.

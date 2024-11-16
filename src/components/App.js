@@ -111,32 +111,48 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [loggedIn, setLoggedIn] = useState(false);
   const [isSucces, setIsSuccess] = useState(false);
-  const [currentToken, setCurrentToken] = useState("");
+  const [email, setEmail] = useState("");
   const history = useNavigate();
 
   useEffect(() => {
     async function handleCheckToken() {
-      const token = auth.getToken();
+      const token = localStorage.getItem("jwt");
+      console.log("token???  ", token);
       if (token === (null || undefined || false)) {
         history("/signin");
+        setLoggedIn(false);
+        return;
       }
-      setCurrentToken(token);
-      auth
-        .checkToken(currentToken)
-        .then((res) => {
-          res.json();
-        })
-        .then((data) => {
-          if (data) {
-            console.log("app data que es??? ", data);
-            onLogin();
-          } else {
-            onSignOut();
-          }
-        });
+      if (typeof token === "object") {
+        try {
+          const res = await auth.checkToken(JSON.stringify(token));
+          const response = await res.json();
+          const data = JSON.parse(JSON.stringify(response));
+          console.log("data???  ", data.data.email);
+          setEmail(data.data.email);
+          setLoggedIn(true);
+          history("/");
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      if (typeof token === "string") {
+        try {
+          const res = await auth.checkToken(token);
+          const response = await res.json();
+          const data = JSON.parse(JSON.stringify(response));
+          console.log("data???  ", data.data.email);
+          setEmail(data.data.email);
+          setLoggedIn(true);
+          history("/");
+        } catch (error) {
+          console.log(error);
+        }
+      }
     }
     handleCheckToken();
-  }, []);
+  }, [history]);
+
   useEffect(() => {
     async function getCurrentUser() {
       const response = await api.getUserInfo();
@@ -144,6 +160,7 @@ function App() {
     }
     getCurrentUser();
   }, []);
+
   useEffect(() => {
     async function getCards() {
       const response = await api.getInitialCards();
@@ -223,11 +240,7 @@ function App() {
     <div className="App">
       <div className="page__content">
         <CurrentUserContext.Provider value={currentUser}>
-          <Header
-            loggedIn={loggedIn}
-            token={currentToken}
-            onSignOut={onSignOut}
-          />
+          <Header loggedIn={loggedIn} email={email} onSignOut={onSignOut} />
 
           <Routes>
             <Route
